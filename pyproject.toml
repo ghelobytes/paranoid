@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "typer-basic-skeleton"
+name = "paranoid"
 version = "0.1.0"
-description = ""
+description = "Because I'm paranoid"
 authors = ["Angelo Arboleda <angelo@sparkgeo.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-typer-basic-skeleton = "typer_basic_skeleton.main:app"
+paranoid = "paranoid.main:app"
 
 
 
@@ -14,6 +14,7 @@ typer-basic-skeleton = "typer_basic_skeleton.main:app"
 [tool.poetry.dependencies]
 python = "^3.7"
 typer = {extras = ["all"], version = "^0.2.1"}
+pycrypto = "^2.6.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

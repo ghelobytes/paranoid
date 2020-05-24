@@ -24,4 +24,4 @@ code-check: ## Apply code checks to source code
 
 test: ## Run tests
 	clear
-	pytest tests --mypy --cov=cli --verbose --maxfail=1 -s
+	poetry run pytest tests --verbose --maxfail=1 -s
