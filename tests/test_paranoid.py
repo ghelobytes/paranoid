@@ -7,7 +7,7 @@ def test_version():
     assert __version__ == "0.1.0"
 
 
-def test_util_encrypt():
+def test_util_encrypt_decrypt():
     password = "mypassword123"
     message = "some data"
 
