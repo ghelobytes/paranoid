@@ -8,16 +8,18 @@ INPUT: str = "s0m3secrets"
 
 
 def test_hide():
-    result = runner.invoke(
-        app, ["hide", "./tests/data/account.json", ], input=INPUT
-    )
+    result = runner.invoke(app, ["hide", "./tests/data/account.json"], input=INPUT)
     print("\nresult.stdout:\n", result.stdout)
     assert result.exit_code == 0
 
 
 def test_show():
-    result = runner.invoke(
-        app, ["show", "./tests/data/encrypted.dat", ], input=INPUT
-    )
+    result = runner.invoke(app, ["show", "./tests/data/encrypted.dat"], input=INPUT)
+    print("\nresult.stdout:\n", result.stdout)
+    assert result.exit_code == 0
+
+
+def test_token():
+    result = runner.invoke(app, ["token", "./tests/data/encrypted.dat"], input=INPUT)
     print("\nresult.stdout:\n", result.stdout)
     assert result.exit_code == 0
