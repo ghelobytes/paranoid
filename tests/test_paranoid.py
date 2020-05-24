@@ -1,23 +1,23 @@
-from paranoid import __version__
+from paranoid.main import app
+from typer.testing import CliRunner
 
-from paranoid.modules import util
-
-
-def test_version():
-    assert __version__ == "0.1.0"
+runner = CliRunner()
 
 
-def test_util_encrypt_decrypt():
-    password = "mypassword123"
-    message = "some data"
+INPUT: str = "s0m3secrets"
 
-    print("\nmessage:", message)
-    print("password:", password)
 
-    encrypted_message = util.encrypt(password, message)
-    print("encrpyted_message:-->", encrypted_message)
+def test_hide():
+    result = runner.invoke(
+        app, ["hide", "./tests/data/account.json", ], input=INPUT
+    )
+    print("\nresult.stdout:\n", result.stdout)
+    assert result.exit_code == 0
 
-    decrpyted_message = util.decrypt(password, encrypted_message)
-    print("decrypted_message:-->", decrpyted_message)
 
-    assert message == decrpyted_message
+def test_show():
+    result = runner.invoke(
+        app, ["show", "./tests/data/encrypted.dat", ], input=INPUT
+    )
+    print("\nresult.stdout:\n", result.stdout)
+    assert result.exit_code == 0

@@ -25,3 +25,7 @@ code-check: ## Apply code checks to source code
 test: ## Run tests
 	clear
 	poetry run pytest tests --verbose --maxfail=1 -s
+
+run: ## Run paranoid command
+	clear
+	poetry run python paranoid/main.py ${ARGS}
