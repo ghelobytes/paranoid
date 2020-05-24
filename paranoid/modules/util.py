@@ -5,6 +5,8 @@ from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
 
+import pyotp
+
 
 def encrypt(key: str, source: str, encode: bool = True) -> str:
     key = key.encode("UTF-8")
@@ -30,6 +32,18 @@ def decrypt(key: str, source: str, decode: bool = True) -> str:
     if data[-padding:] != bytes([padding]) * padding:
         raise ValueError("Invalid padding...")
     return data[:-padding].decode("UTF-8")
+
+
+def get_otp(key: str) -> str:
+    """Generate OTP
+
+    :param key: Authenticator key
+    :type key: str
+    :return: One time password
+    :rtype: str
+    """
+    code: str = pyotp.TOTP(key).now()
+    return f"{code[:3]} {code[3:]}"
 
 
 def read(filename: str) -> str:

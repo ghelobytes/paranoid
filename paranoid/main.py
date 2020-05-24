@@ -10,18 +10,18 @@ app = typer.Typer()
 
 
 @app.command()
-def hide(
-    filename: str, password: str = typer.Option(..., prompt=True), delete: bool = False
-):
+def hide(filename: str, delete: bool = False):
     """Encrypt file
 
     :param filename: The file to encrypt
     :type filename: str
-    :param password: Password used to encrypt the file
     :param delete:  Whether to automatically delete the source file, defaults to False
     :type delete: bool, optional
     """
+    typer.clear()
     try:
+        password: str = typer.prompt("Password", hide_input=True)
+
         content: str = util.read(filename)
         encrypted_content: str = util.encrypt(password, content)
         encrypted_filename: str = f"{os.path.dirname(filename)}/encrypted.dat"
@@ -37,15 +37,16 @@ def hide(
 
 
 @app.command()
-def show(filename: str, password: str = typer.Option(..., prompt=True)):
+def show(filename: str):
     """Decrypt file
 
     :param filename: The file to decrypt
     :type filename: str
-    :param password: Password used to decrypt the file
-    :type password: str, optional
     """
+    typer.clear()
     try:
+        password: str = typer.prompt("Password", hide_input=True)
+
         content: str = util.read(filename)
         decrypted_content: str = util.decrypt(password, content)
         decrypted_filename: str = f"{os.path.dirname(filename)}/decrypted.dat"
@@ -59,16 +60,16 @@ def show(filename: str, password: str = typer.Option(..., prompt=True)):
 
 
 @app.command()  # noqa: C901
-def token(filename: str, password: str = typer.Option(..., prompt=True)):
+def token(filename: str):
     """Generate OTP
 
     :param filename: Ecrypted file to read authenticator keys
     :type filename: str
-    :param password: Password used to encrypt authenticator key file,
-                     defaults to typer.Option(..., prompt=True)
-    :type password: str, optional
     """
+    typer.clear()
     try:
+        password: str = typer.prompt("Password", hide_input=True)
+
         content: str = util.read(filename)
         decrypted_content: str = util.decrypt(password, content)
 
@@ -84,30 +85,34 @@ def token(filename: str, password: str = typer.Option(..., prompt=True)):
         choice: str = None
 
         while choice not in options.keys():
-            choice = typer.prompt("Account")
-        typer.echo(f"\n OTP for {options[choice]}:")
+            choice = typer.prompt("    Selected")
 
-        seconds: int = datetime.datetime.now().second
-        elapsed: int = seconds if seconds < 30 else seconds - 30
+        if choice == "0":
+            typer.echo("Aborted!")
+        else:
+            account_key: str = options[choice]
+            typer.echo(f"\n OTP for {account_key}:")
 
-        code: str = "347 456"
-        go: bool = True
+            seconds: int = datetime.datetime.now().second
+            elapsed: int = seconds if seconds < 30 else seconds - 30
 
-        while go:
-            with typer.progressbar(
-                length=30, label=f"  {code}", show_percent=False, show_eta=False
-            ) as progress:
-                if elapsed > 0:
-                    progress.update(elapsed)
-                for second in range(30 - elapsed):
-                    time.sleep(1)
-                    progress.update(1)
-                    typer.echo(
-                        f" Remaining: {30-elapsed-second-1:0>2}s", nl=False
-                    )
-                if elapsed > 0:
-                    elapsed = 0
+            for i in range(3):
+                if i > 0:
+                    typer.echo(f"\033[2A")
 
+                code: str = util.get_otp(account_key)
+                label: str = f"    \033[32m{code}\033[0m"
+                with typer.progressbar(
+                    length=30, label=label, show_percent=False, show_eta=False
+                ) as progress:
+                    if elapsed > 0:
+                        progress.update(elapsed)
+                    for second in range(30 - elapsed):
+                        time.sleep(1)
+                        progress.update(1)
+                        typer.echo(f" Remaining: {30-elapsed-second-1:0>2}s", nl=False)
+                    if elapsed > 0:
+                        elapsed = 0
     except Exception as ex:
         typer.secho(f"Error: {ex}", fg=typer.colors.RED)
 

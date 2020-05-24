@@ -20,6 +20,9 @@ def test_show():
 
 
 def test_token():
-    result = runner.invoke(app, ["token", "./tests/data/encrypted.dat"], input=INPUT)
+    result = runner.invoke(
+        app, ["token", "./tests/data/encrypted.dat"], input=f"{INPUT}\n0"
+    )
     print("\nresult.stdout:\n", result.stdout)
     assert result.exit_code == 0
+    assert "Aborted" in result.stdout
