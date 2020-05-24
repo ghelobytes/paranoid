@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "typer-basic-skeleton"
+version = "0.1.0"
+description = ""
+authors = ["Angelo Arboleda <angelo@sparkgeo.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+typer-basic-skeleton = "typer_basic_skeleton.main:app"
+
+
+
+
+[tool.poetry.dependencies]
+python = "^3.7"
+typer = {extras = ["all"], version = "^0.2.1"}
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+flake8 = "^3.8.2"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
