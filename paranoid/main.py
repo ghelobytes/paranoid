@@ -2,11 +2,9 @@ import datetime
 import json
 import os
 import time
-
-import typer
-
 from pathlib import Path
 
+import typer
 from paranoid.modules import util
 
 app = typer.Typer()
