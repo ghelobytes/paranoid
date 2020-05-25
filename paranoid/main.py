@@ -8,9 +8,11 @@ from paranoid.modules import util
 
 app = typer.Typer()
 
+DEFAULT_STASH: str = "~/.paranoid/encrypted.dat"
+
 
 @app.command()
-def hide(filename: str, delete: bool = False):
+def hide(filename: str, destination: str):
     """Encrypt file
 
     :param filename: The file to encrypt
@@ -24,24 +26,22 @@ def hide(filename: str, delete: bool = False):
 
         content: str = util.read(filename)
         encrypted_content: str = util.encrypt(password, content)
-        encrypted_filename: str = f"{os.path.dirname(filename)}/encrypted.dat"
 
-        util.write(encrypted_filename, encrypted_content)
-        if delete:
-            os.remove(filename)
+        util.write(destination, encrypted_content)
 
-        typer.secho(f"File encryped as {encrypted_filename}", fg=typer.colors.GREEN)
-        typer.secho(f"Content: \n{encrypted_content}", fg=typer.colors.GREEN)
+        typer.secho(f"File encryped as {destination}", fg=typer.colors.GREEN)
     except Exception as ex:
         typer.secho(f"Error: {ex}", fg=typer.colors.RED)
 
 
 @app.command()
-def show(filename: str):
+def show(filename: str, export: str = None):
     """Decrypt file
 
     :param filename: The file to decrypt
     :type filename: str
+    :param export: Export to a file, defaults to None
+    :type export: str, optional
     """
     typer.clear()
     try:
@@ -49,18 +49,21 @@ def show(filename: str):
 
         content: str = util.read(filename)
         decrypted_content: str = util.decrypt(password, content)
-        decrypted_filename: str = f"{os.path.dirname(filename)}/decrypted.dat"
 
-        util.write(decrypted_filename, decrypted_content)
+        if export:
+            util.write(export, decrypted_content)
+            typer.secho(f"File decrypted as {export}", fg=typer.colors.GREEN)
+        else:
+            typer.secho("=" * 50, fg=typer.colors.GREEN)
+            typer.secho(decrypted_content, fg=typer.colors.BLACK)
+            typer.secho("=" * 50, fg=typer.colors.GREEN)
 
-        typer.secho(f"File decrypted as {decrypted_filename}", fg=typer.colors.GREEN)
-        typer.secho(f"Content: \n{decrypted_content}", fg=typer.colors.GREEN)
     except Exception as ex:
         typer.secho(f"Error: {ex}", fg=typer.colors.RED)
 
 
 @app.command()  # noqa: C901
-def token(filename: str):
+def token(filename: str = None):
     """Generate OTP
 
     :param filename: Ecrypted file to read authenticator keys
@@ -69,6 +72,9 @@ def token(filename: str):
     typer.clear()
     try:
         password: str = typer.prompt("Password", hide_input=True)
+
+        if filename is None:
+            filename = DEFAULT_STASH
 
         content: str = util.read(filename)
         decrypted_content: str = util.decrypt(password, content)
