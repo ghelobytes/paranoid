@@ -4,11 +4,14 @@ import os
 import time
 
 import typer
+
+from pathlib import Path
+
 from paranoid.modules import util
 
 app = typer.Typer()
 
-DEFAULT_STASH: str = "~/.paranoid/encrypted.dat"
+DEFAULT_STASH: str = f"~/.paranoid/encrypted.dat"
 
 
 @app.command()
@@ -22,6 +25,9 @@ def hide(filename: str, destination: str):
     """
     typer.clear()
     try:
+        filename = filename.replace("~", str(Path.home()))
+        destination = destination.replace("~", str(Path.home()))
+
         password: str = typer.prompt("Password", hide_input=True)
 
         content: str = util.read(filename)
@@ -48,12 +54,15 @@ def show(filename: str, export: str = None):
     """
     typer.clear()
     try:
+        filename = filename.replace("~", str(Path.home()))
+
         password: str = typer.prompt("Password", hide_input=True)
 
         content: str = util.read(filename)
         decrypted_content: str = util.decrypt(password, content)
 
         if export:
+            export = filename.replace("~", str(Path.home()))
             if os.path.exists(export):
                 raise Exception(f"File {export} already exists.")
             util.write(export, decrypted_content)
@@ -80,6 +89,8 @@ def token(filename: str = None):
 
         if filename is None:
             filename = DEFAULT_STASH
+
+        filename = filename.replace("~", str(Path.home()))
 
         content: str = util.read(filename)
         decrypted_content: str = util.decrypt(password, content)
