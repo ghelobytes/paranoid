@@ -56,6 +56,9 @@ def write(filename: str, content: str) -> None:
         file.write(content)
 
 
-def get_ymd():
+def timestamp():
     dt = datetime.datetime.today()
-    return f"{dt.year}{dt.month:0>2d}{dt.day:0>2d}"
+    return (
+        f"{dt.year}{dt.month:0>2d}{dt.day:0>2d}"
+        f"{dt.hour:0>2d}{dt.minute:0>2d}{dt.second:0>2d}"
+    )

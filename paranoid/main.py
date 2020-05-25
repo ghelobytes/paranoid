@@ -27,6 +27,9 @@ def hide(filename: str, destination: str):
         content: str = util.read(filename)
         encrypted_content: str = util.encrypt(password, content)
 
+        if os.path.exists(destination):
+            raise Exception(f"File {destination} already exists.")
+
         util.write(destination, encrypted_content)
 
         typer.secho(f"File encryped as {destination}", fg=typer.colors.GREEN)
@@ -51,6 +54,8 @@ def show(filename: str, export: str = None):
         decrypted_content: str = util.decrypt(password, content)
 
         if export:
+            if os.path.exists(export):
+                raise Exception(f"File {export} already exists.")
             util.write(export, decrypted_content)
             typer.secho(f"File decrypted as {export}", fg=typer.colors.GREEN)
         else:
