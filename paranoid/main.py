@@ -60,7 +60,7 @@ def show(filename: str, export: str = None):
         decrypted_content: str = util.decrypt(password, content)
 
         if export:
-            export = filename.replace("~", str(Path.home()))
+            export = export.replace("~", str(Path.home()))
             if os.path.exists(export):
                 raise Exception(f"File {export} already exists.")
             util.write(export, decrypted_content)

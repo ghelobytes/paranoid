@@ -14,3 +14,21 @@ $ git init .
 # add typer dependency
 $ poetry add typer[all]
 ```
+
+### Manual test
+```
+# Encrypt a file
+$ make run ARGS="hide ./tests/data/account.json ~/.paranoid/encrypted.dat"
+
+# Show file's decrypted content on console
+$ make run ARGS="show ~/.paranoid/encrypted.dat"
+
+# Export file's decrypted content to a file
+$ make run ARGS="show ~/.paranoid/encrypted.dat --export=~/Desktop/exposed.json"
+
+# Get OTP from a specific file
+$ make run ARGS="token ~/.paranoid/encrypted.dat"
+
+# Get OTP from default location
+$ make run ARGS="token"
+```
