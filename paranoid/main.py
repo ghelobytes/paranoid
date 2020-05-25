@@ -110,8 +110,8 @@ def token(filename: str = None):
         if choice == "0":
             typer.echo("Aborted!")
         else:
-            account_key: str = options[choice]
-            typer.echo(f"\n OTP for {account_key}:")
+            account_key: str = data[options[choice]].replace(" ", "")
+            typer.echo(f"\n OTP for {options[choice]}:")
 
             seconds: int = datetime.datetime.now().second
             elapsed: int = seconds if seconds < 30 else seconds - 30
